@@ -10,9 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Calendar } from "@/components/ui/calendar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
+
 import Icon from "@/components/ui/icon";
 
 type UserRole = "admin" | "student" | null;
@@ -320,12 +318,58 @@ const Index = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  className="rounded-md border"
-                />
+                <div className="p-4 border rounded-lg bg-white">
+                  <div className="grid grid-cols-7 gap-1 mb-4">
+                    {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].map((day) => (
+                      <div
+                        key={day}
+                        className="text-center text-sm font-medium text-gray-500 p-2"
+                      >
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7 gap-1">
+                    {Array.from({ length: 35 }, (_, i) => {
+                      const date = new Date();
+                      const firstDay = new Date(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        1,
+                      );
+                      const startDate = new Date(firstDay);
+                      startDate.setDate(
+                        startDate.getDate() - firstDay.getDay() + 1,
+                      );
+                      const currentDate = new Date(startDate);
+                      currentDate.setDate(currentDate.getDate() + i);
+                      const isCurrentMonth =
+                        currentDate.getMonth() === date.getMonth();
+                      const isToday =
+                        currentDate.toDateString() === date.toDateString();
+                      const isSelected =
+                        selectedDate &&
+                        currentDate.toDateString() ===
+                          selectedDate.toDateString();
+
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => setSelectedDate(currentDate)}
+                          className={`
+                            p-3 text-center text-sm rounded-lg transition-colors
+                            ${isCurrentMonth ? "text-gray-900" : "text-gray-400"}
+                            ${isToday ? "bg-blue-600 text-white font-semibold" : ""}
+                            ${isSelected && !isToday ? "bg-blue-100 text-blue-900" : ""}
+                            ${!isToday && !isSelected ? "hover:bg-gray-100" : ""}
+                          `}
+                        >
+                          {currentDate.getDate()}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
